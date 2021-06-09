@@ -21,26 +21,18 @@
 ## DEALINGS IN THE SOFTWARE.
 
 class UserNotExists(Exception):
-    '''
-    Exception for a user that does not exist within the server
-    '''
-
     def __init__(self, name: str):
         '''
-        `name`: the name of a user not within the server
+        `name`: the name of the user that does not exist
         '''
 
         self.name = name
 
 
 class InvalidPassword(Exception):
-    '''
-    Exception for an incorrect password
-    '''
-
     def __init__(self, name: str, pw: str):
         '''
-        `name`: the name of the user  
+        `name`: the name of the user
         `pw`: the invalid password
         '''
 
@@ -49,10 +41,6 @@ class InvalidPassword(Exception):
 
 
 class InadequatePermissions(Exception):
-    '''
-    Exception for an incorrect administrator password
-    '''
-
     def __init__(self, admin_pw: str):
         '''
         `admin_pw`: the invalid administrator password
@@ -62,10 +50,6 @@ class InadequatePermissions(Exception):
 
 
 class NameTooLong(Exception):
-    '''
-    Excepttion for a name that is too long
-    '''
-
     def __init__(self, name: str):
         '''
         `name`: the name that is too long
