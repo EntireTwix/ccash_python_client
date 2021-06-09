@@ -1,5 +1,29 @@
+## Copyright © 2021 FearlessDoggo21
+## 
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the “Software”), to deal in the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+## 
+## The above copyright notice and this permission notice shall be
+## included in all copies or substantial portions of the Software.
+## 
+## THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+## EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+## MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+## NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+## HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+## WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+## DEALINGS IN THE SOFTWARE.
+
 import requests
-from exc import UserNotExists, InvalidPassword  ## pylint: disable=import-error
+from exc import UserNotExists, InvalidPassword, \
+    InadequatePermissions, NameTooLong \
+    ## pylint: disable=import-error
 
 
 class CCash:
@@ -20,6 +44,19 @@ class CCash:
         self.timeout = timeout
 
 
+    def help(self):
+        '''
+        Gets the CCash help page
+
+        Returns the UTF-8 formatted help texts
+        '''
+
+        return requests.get(
+            self.domain + "/BankF/help",
+            timeout=self.timeout
+        ).text
+
+
     def close(self, admin_pw: str):
         '''
         Closes and saves the server instance
@@ -27,11 +64,12 @@ class CCash:
         `admin_pw`: the administrator password of the server instance
         '''
 
-        requests.post(
+        if requests.post(
             self.domain + "/BankF/admin/close",
             timeout=self.timeout,
             json=dict(attempt=admin_pw)
-        )
+        ).json()["value"] == -1:
+            raise InadequatePermissions(admin_pw)
 
 
     def new_user(self, name: str, pw: str):
@@ -40,7 +78,12 @@ class CCash:
 
         `name`: the name of the new user  
         `pw`: the initial password of the new user
+
+        Raises a `NameTooLong` error if the name is too long
         '''
+
+        if len(name) > 50:
+            raise NameTooLong(name)
 
         requests.post(
             self.domain + "/BankF/user",
@@ -125,19 +168,6 @@ class CCash:
         )
 
 
-    def help(self):
-        '''
-        Gets the CCash help page
-
-        Returns the UTF-8 formatted help texts
-        '''
-
-        return requests.get(
-            self.domain + "/BankF/help",
-            timeout=self.timeout
-        ).text
-
-
     def verify_pw(self, name: str, pw: str):
         '''
         Verifies a user's password
@@ -156,9 +186,47 @@ class CCash:
             self.domain + "/BankF/vpass",
             timeout=self.timeout,
             json=dict(name=name, attempt=pw)
-        ).json().get("value")
+        ).json()["value"]
 
         if response == -1:
             raise UserNotExists(name)
         else:
             return bool(response)
+
+
+    def verify_user(self, name: str):
+        '''
+        Verifies if a user is on the server
+
+        `name`: the name of the user
+
+        Returns `True` or `False` based on if the user is on the 
+        server
+        '''
+
+        return bool(requests.get(
+            self.domain + "/BankF/contains/" + name,
+            timeout=self.timeout
+        ).json()["value"])
+
+
+    def verify_admin_pw(self, admin_pw: str):
+        '''
+        Verifies the administrator's password of the server 
+        instance 
+
+        `admin_pw`: the administrator password of the server 
+        instance to verify
+        
+        Returns `True` or `False` based on whether the password is
+        correct
+        '''
+
+        return bool(requests.post(
+            self.domain + "/BankF/admin/vpass",
+            timeout=self.timeout,
+            json=dict(attempt=admin_pw)
+        ).json()["value"])
+
+
+    def 
