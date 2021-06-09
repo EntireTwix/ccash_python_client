@@ -23,6 +23,7 @@ the source code from GitHub.
 
 `git clone https://GitHub.com/FearlessDoggo21/CCashPythonClient`
 
-You will then be able to import the python module.
+You will then be able to import the python module and remove
+this README if you wish.
 
 `import CCashPythonClient as CCash`

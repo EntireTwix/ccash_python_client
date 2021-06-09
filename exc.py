@@ -17,7 +17,8 @@ class InvalidPassword(Exception):
     '''
 
     def __init__(self, user: str, pw: str):
-        '''`user`: the username of the user  
+        '''
+        `user`: the username of the user  
         `pw`: the invalid password
         '''
 
