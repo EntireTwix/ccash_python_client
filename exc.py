@@ -5,8 +5,6 @@ class UserNotExists(Exception):
 
     def __init__(self, user: str):
         '''
-        Initializes a new instance of the UserNotExists exception
-
         `user`: the username of a user not within the server
         '''
 
@@ -19,13 +17,9 @@ class InvalidPassword(Exception):
     '''
 
     def __init__(self, user: str, pw: str):
-        '''
-        Initializes a new instance of the InvalidePassword exception
-
-        `user`: the username of the user  
+        '''`user`: the username of the user  
         `pw`: the invalid password
         '''
 
         self.user = user
         self.pw = pw
-
