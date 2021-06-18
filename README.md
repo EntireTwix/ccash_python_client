@@ -10,11 +10,10 @@ CCash repository and set-up information can be found
 [here](https://GitHub.com/EntireTwix/CCash).
 
 ## Documentation
-The code for this project is extremely simple and anyone with basic
-Python knowledge would be able to write it. Thus, no external
-documentation is provided and the class/function markdown
-descriptions below each function should suffice to understand the
-module.
+This project has very simple functions and is not large. Thus, no
+external documentation is provided. However, each class and function
+has its information written in markdown format beneath the
+definition.
 
 ## Setup
 Because this is a small module, it is safe to clone it into your
@@ -23,7 +22,8 @@ the source code from GitHub.
 
 `git clone https://GitHub.com/FearlessDoggo21/CCashPythonClient`
 
-You will then be able to import the python module and remove
-this README if you wish.
+You will then be able to import the python module. \
+It is requested that the README remains in the directory. The license
+must remain.
 
 `import CCashPythonClient as CCash`
