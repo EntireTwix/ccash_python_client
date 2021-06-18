@@ -75,11 +75,11 @@ class CCash:
         Raises (admin) `InvalidPassword`
         '''
 
-        if not requests.post(
+        if requests.post(
             self.domain + "/BankF/admin/close",
             timeout=self.timeout,
             headers=dict(password=admin_pw)
-        ).json()["value"]:
+        ).content == "false":
             raise InvalidPassword(admin_pw)
 
 
@@ -100,7 +100,7 @@ class CCash:
             self.domain + f"/BankF/user/{name}",
             timeout=self.timeout,
             headers=dict(password=init_pw)
-        ).json()["value"] == -5:
+        ).json == "-5":
             raise UserAlreadyExists(name)
 
 
@@ -125,11 +125,11 @@ class CCash:
             timeout=self.timeout,
             headers=dict(password=admin_pw),
             data=init_pw
-        ).json()["value"]
+        ).content
 
-        if response == -2:
+        if response == "-2":
             raise InvalidPassword(admin_pw)
-        elif response == -5:
+        elif response == "-5":
             raise UserAlreadyExists(name)
 
 
@@ -147,11 +147,11 @@ class CCash:
             self.domain + f"/BankF/user/{name}",
             timeout=self.timeout,
             headers=dict(password=pw)
-        ).json()["value"]
+        ).content
 
-        if response == -1:
+        if response == "-1":
             raise UserNotFound(name)
-        elif response == -2:
+        elif response == "-2":
             raise InvalidPassword(pw, name)
 
 
@@ -169,11 +169,11 @@ class CCash:
             self.domain + f"/BankF/admin/user/{name}",
             timeout=self.timeout,
             headers=dict(password=admin_pw)
-        ).json()["value"]
+        ).content
 
-        if response == -1:
+        if response == "-1":
             raise UserNotFound(name)
-        elif response == -2:
+        elif response == "-2":
             raise InvalidPassword(admin_pw)
 
 
@@ -187,7 +187,7 @@ class CCash:
         return requests.get(
             self.domain + f"/BankF/contains/{name}",
             timeout=self.timeout
-        ).json()["value"] != -2
+        ).content != "-2"
 
 
     def verify_pw(self, name: str, pw: str):
@@ -205,12 +205,12 @@ class CCash:
             self.domain + f"/BankF/{name}/pass/verify",
             timeout=self.timeout,
             headers=dict(password=pw)
-        ).json()["value"]
+        ).content
 
-        if response == -1:
+        if response == "-1":
             raise UserNotFound(name)
         
-        return response != -2
+        return response != "-2"
 
 
     def verify_admin_pw(self, admin_pw: str):
@@ -225,7 +225,7 @@ class CCash:
             self.domain + "/BankF/admin/verify",
             timeout=self.timeout,
             headers=dict(password=admin_pw)
-        ).json()["value"] == -2
+        ).content == "-2"
 
     
     def change_pw(self, name: str, pw: str, change_pw: str):
@@ -244,11 +244,11 @@ class CCash:
             timeout=self.timeout,
             headers=dict(password=pw),
             body=change_pw
-        ).json()["value"]
+        ).content
 
-        if response == -1:
+        if response == "-1":
             raise UserNotFound(name)
-        elif response == -2:
+        elif response == "-2":
             raise InvalidPassword(pw, name)
 
 
@@ -261,10 +261,10 @@ class CCash:
         Raises `UserNotFound`
         '''
 
-        response = requests.get(
+        response = int(requests.get(
             self.domain + f"/BankF/{name}/bal",
             timeout=self.timeout
-        ).json()["value"]
+        ).content)
 
         if response == -1:
             raise UserNotFound(name)
@@ -287,11 +287,11 @@ class CCash:
             self.domain + f"/BankF/admin/{name}/bal?amount={amount}",
             timeout=self.timeout,
             headers=dict(password=admin_pw)
-        ).json()["value"]
+        ).content
 
-        if response == -1:
+        if response == "-1":
             raise UserNotFound(name)
-        elif response == -2:
+        elif response == "-2":
             raise InvalidPassword(admin_pw)
 
 
@@ -309,7 +309,7 @@ class CCash:
             self.domain + f"/BankF/{name}/log",
             timeout = self.timeout,
             headers=dict(password=pw)
-        ).json()["value"]
+        ).json()
 
         if response == -1:
             raise UserNotFound(name)
@@ -338,13 +338,13 @@ class CCash:
                 f"/BankF/{sender}/send/{recipient}?amount={amount}",
             timeout=self.timeout,
             headers=dict(password=pw)
-        ).json()["value"]
+        ).content
 
-        if response == -1:
+        if response == "-1":
             raise UserNotFound(None)
-        elif response == -2:
+        elif response == "-2":
             raise InvalidPassword(pw, sender)
-        elif response == -3:
+        elif response == "-3":
             raise InvalidRequest()
-        elif response == -6:
+        elif response == "-6":
             raise InsufficientFunds(sender, amount)
