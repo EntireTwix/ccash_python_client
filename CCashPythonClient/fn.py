@@ -22,9 +22,8 @@
 
 import requests
 from .ex import UserNotFound, InvalidPassword, InvalidRequest, \
-    NameTooLong, UserAlreadyExists, InsufficientFunds \
-    ## pylint: disable=import-error
-from .conf import MAX_NAME_LENGTH    ## pylint: disable=import-error
+    NameTooLong, UserAlreadyExists, InsufficientFunds
+from .conf import MAX_NAME_LENGTH
 
 
 class CCash:

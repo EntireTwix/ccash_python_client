@@ -21,7 +21,6 @@
 ## DEALINGS IN THE SOFTWARE.
 
 from .ex import UserNotFound, InvalidPassword, InvalidRequest, \
-    NameTooLong, UserAlreadyExists, InsufficientFunds \
-    ## pylint: disable=import-error
-from .conf import MAX_NAME_LENGTH    ## pylint: disable=import-error
-from .func import CCash              ## pylint: disable=import-error
+    NameTooLong, UserAlreadyExists, InsufficientFunds
+from .conf import MAX_NAME_LENGTH
+from .fn import CCash
