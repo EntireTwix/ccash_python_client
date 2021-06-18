@@ -27,3 +27,10 @@ It is requested that the README remains in the directory. The license
 must remain.
 
 `import CCashPythonClient as CCash`
+
+To enable VSCode IntelliSense auto-completion and markdown
+information, place the following lines in `.vscode/settings.json`:
+
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/CCashPythonClient"
+    ]
