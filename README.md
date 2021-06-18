@@ -1,6 +1,6 @@
 # CCashPythonClient
-A Python based web-client to assist with utilizing CCash MineCraft
-utilities. \
+A web-client to query CCash servers, providing ease of 
+development. \
 Uses the requests lib to communicate with a remote server. \
 Implements python Exception based errors rather than numbers, and
 returns JSON data as dictionaries.
