@@ -21,10 +21,10 @@
 ## DEALINGS IN THE SOFTWARE.
 
 import requests
-from exc import UserNotFound, InvalidPassword, InvalidRequest, \
+from .ex import UserNotFound, InvalidPassword, InvalidRequest, \
     NameTooLong, UserAlreadyExists, InsufficientFunds \
     ## pylint: disable=import-error
-from conf import MAX_NAME_LENGTH    ## pylint: disable=import-error
+from .conf import MAX_NAME_LENGTH    ## pylint: disable=import-error
 
 
 class CCash:

@@ -20,8 +20,8 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ## DEALINGS IN THE SOFTWARE.
 
-from exc import UserNotFound, InvalidPassword, InvalidRequest, \
+from .ex import UserNotFound, InvalidPassword, InvalidRequest, \
     NameTooLong, UserAlreadyExists, InsufficientFunds \
     ## pylint: disable=import-error
-from conf import MAX_NAME_LENGTH    ## pylint: disable=import-error
-from func import CCash              ## pylint: disable=import-error
+from .conf import MAX_NAME_LENGTH    ## pylint: disable=import-error
+from .func import CCash              ## pylint: disable=import-error
