@@ -44,6 +44,7 @@ class InvalidPassword(Exception):
 
 
 class InvalidRequest(Exception):
+    '''Raised when trying to send funds to self or if amount is 0'''
     pass
 
 
@@ -69,9 +70,11 @@ class UserAlreadyExists(Exception):
 
 class InsufficientFunds(Exception):
     '''Raised when trying to transfer funds not available'''
-    def __init__(self, name: str):
+    def __init__(self, name: str, amount: int):
         '''
         `name`: the name of the user who has insufficient funds
+        `amount`: an insufficient amount
         '''
 
         self.name = name
+        self.amount = amount

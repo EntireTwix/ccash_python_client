@@ -60,7 +60,8 @@ class CCash:
                 timeout=5
             )
             return True
-        except requests.Timeout:
+        except (requests.exceptions.Timeout, 
+            requests.exceptions.ConnectionError):
             return False
 
 
@@ -123,7 +124,7 @@ class CCash:
             self.domain + f"/BankF/admin/user/{name}?init_bal={bal}",
             timeout=self.timeout,
             headers=dict(password=admin_pw),
-            data=pw
+            data=init_pw
         ).json()["value"]
 
         if response == -2:
@@ -136,7 +137,7 @@ class CCash:
         '''
         Deletes a user
 
-        `name`: the name
+        `name`: the name  
         `pw`: the password
 
         Raises `UserNotFound`, `InvalidPassword`
@@ -150,7 +151,7 @@ class CCash:
 
         if response == -1:
             raise UserNotFound(name)
-        elif reponse == -2:
+        elif response == -2:
             raise InvalidPassword(pw, name)
 
 
@@ -158,7 +159,7 @@ class CCash:
         '''
         Deletes a user with the administrator password
 
-        `name`: the name
+        `name`: the name  
         `admin_pw`: the administrator password
 
         Raises `UserNotFound`, (admin) `InvalidPassword`
@@ -174,124 +175,176 @@ class CCash:
             raise UserNotFound(name)
         elif response == -2:
             raise InvalidPassword(admin_pw)
-        
 
-    def send_funds(self, sender: str, pw: str, receiver: str, 
-        amount: int):
+
+    def user_exists(self, name: str):
         '''
-        Sends money from one user to another
+        Returns a boolean value indicating if a user exists
 
-        `sender`: the name of the sender  
-        `pw`: the password of the sender  
-        `receiver`: the name of the receiver  
-        `amount`: the amount to send
+        `name`: the name
         '''
 
-        requests.post(
-            self.domain + "/BankF/sendfunds",
-            timeout=self.timeout,
-            json=dict(a_name=sender, attempt=pw, b_name=receiver,
-                amount=amount)
-        )
-
-
-    def change_pw(self, name: str, pw: str, new_pw: str):
-        '''
-        Changes a user's password
-
-        `name`: the name of the user  
-        `pw`: the user's original password which they want to 
-        change  
-        `new_pw`: the new password
-
-        Raises a `UserNotExists` error if the user is not on the 
-        server
-        '''
-
-        if requests.patch(
-            self.domain + "/BankF/changepass",
-            timeout=self.timeout,
-            json=dict(name=name, attempt=pw, new_pass=new_pw)
-        ).json().get("value") == -1:
-            raise UserNotExists(name)
-
-
-    def admin_set_bal(self, name: str, admin_pw: str, bal: int):
-        '''
-        Sets a user's balance
-
-        `name`: the name of the user  
-        `admin_pw`: the administrator password of the server 
-        instance  
-        `bal`: the new balance of the user
-        '''
-
-        requests.patch(
-            self.domain + "/BankF/" + name + "/bal",
-            timeout=self.timeout,
-            json=dict(name=name, attempt=admin_pw, amount=bal)
-        )
+        return requests.get(
+            self.domain + f"/BankF/contains/{name}",
+            timeout=self.timeout
+        ).json()["value"] != -2
 
 
     def verify_pw(self, name: str, pw: str):
         '''
-        Verifies a user's password
+        Returns a boolean value indicating if the supplied password
+        is that of the user
 
-        `name`: the name of the user  
-        `pw`: the password to verify
+        `name`: the name  
+        `pw`: the password
 
-        Returns `True` or `False` based on whether the password is
-        correct
-
-        Raises a `UserNotExists` error if the user is not on the 
-        server
+        Raises `UserNotFound`
         '''
 
-        response = requests.post(
-            self.domain + "/BankF/vpass",
+        response = requests.get(
+            self.domain + f"/BankF/{name}/pass/verify",
             timeout=self.timeout,
-            json=dict(name=name, attempt=pw)
+            headers=dict(password=pw)
         ).json()["value"]
 
         if response == -1:
-            raise UserNotExists(name)
-        else:
-            return bool(response)
-
-
-    def verify_user(self, name: str):
-        '''
-        Verifies if a user is on the server
-
-        `name`: the name of the user
-
-        Returns `True` or `False` based on if the user is on the 
-        server
-        '''
-
-        return bool(requests.get(
-            self.domain + "/BankF/contains/" + name,
-            timeout=self.timeout
-        ).json()["value"])
+            raise UserNotFound(name)
+        
+        return response != -2
 
 
     def verify_admin_pw(self, admin_pw: str):
         '''
-        Verifies the administrator's password of the server 
-        instance 
+        Returns a boolean value indicating if the supplied password
+        is the administrator password
 
-        `admin_pw`: the administrator password of the server 
-        instance to verify
-        
-        Returns `True` or `False` based on whether the password is
-        correct
+        `admin_pw`: the administrator password
         '''
 
-        return bool(requests.post(
-            self.domain + "/BankF/admin/vpass",
+        return requests.get(
+            self.domain + "/BankF/admin/verify",
             timeout=self.timeout,
-            json=dict(attempt=admin_pw)
-        ).json()["value"])
+            headers=dict(password=admin_pw)
+        ).json()["value"] == -2
+
+    
+    def change_pw(self, name: str, pw: str, change_pw: str):
+        '''
+        Changes a user's password
+
+        `name`: the name  
+        `pw`: the password  
+        `change_pw`: the password to change to
+
+        Raises `UserNotFound`, `WrongPassword`
+        '''
+
+        response = requests.patch(
+            self.domain + f"/BankF/{name}/pass/change",
+            timeout=self.timeout,
+            headers=dict(password=pw),
+            body=change_pw
+        ).json()["value"]
+
+        if response == -1:
+            raise UserNotFound(name)
+        elif response == -2:
+            raise InvalidPassword(pw, name)
 
 
-    def 
+    def get_bal(self, name: str):
+        '''
+        Returns a user's balance
+
+        `name`: the name
+
+        Raises `UserNotFound`
+        '''
+
+        response = requests.get(
+            self.domain + f"/BankF/{name}/bal",
+            timeout=self.timeout
+        ).json()["value"]
+
+        if response == -1:
+            raise UserNotFound(name)
+        
+        return response
+
+
+    def set_bal(self, name: str, admin_pw: str, amount: int):
+        '''
+        Sets a user's balance
+
+        `name`: the name  
+        `admin_pw`: the administrator password  
+        `amount`: the amount to set
+
+        Raises `UserNoutFound`, (admin) `InvalidPassword`
+        '''
+
+        response = requests.patch(
+            self.domain + f"/BankF/admin/{name}/bal?amount={amount}",
+            timeout=self.timeout,
+            headers=dict(password=admin_pw)
+        ).json()["value"]
+
+        if response == -1:
+            raise UserNotFound(name)
+        elif response == -2:
+            raise InvalidPassword(admin_pw)
+
+
+    def get_log(self, name: str, pw: str):
+        '''
+        Returns a user's logs
+
+        `name`: the name
+        `pw`: the password
+
+        Raises `UserNotFound`, `InvalidPassword`
+        '''
+
+        response = requests.get(
+            self.domain + f"/BankF/{name}/log",
+            timeout = self.timeout,
+            headers=dict(password=pw)
+        ).json()["value"]
+
+        if response == -1:
+            raise UserNotFound(name)
+        elif response == -2:
+            raise InvalidPassword(pw, name)
+
+        return response
+
+    
+    def send_funds(self, sender: str, pw: str, recipient: str, 
+        amount: int):
+        '''
+        Sends an amount to another user
+
+        `sender`: the name of the sender  
+        `pw`: the password of the sender  
+        `recipient`: the name of the recipient  
+        `amount`: the amount to send
+
+        Raises `UserNotFound`, `InvalidPassword`, `InvalidRequest`,
+        `InsufficientFunds`
+        '''
+
+        response = requests.post(
+            self.domain + 
+                f"/BankF/{sender}/send/{recipient}?amount={amount}",
+            timeout=self.timeout,
+            headers=dict(password=pw)
+        ).json()["value"]
+
+        if response == -1:
+            raise UserNotFound(None)
+        elif response == -2:
+            raise InvalidPassword(pw, sender)
+        elif response == -3:
+            raise InvalidRequest()
+        elif response == -6:
+            raise InsufficientFunds(sender, amount)
