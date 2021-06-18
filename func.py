@@ -21,23 +21,17 @@
 ## DEALINGS IN THE SOFTWARE.
 
 import requests
-from exc import UserNotExists, InvalidPassword, \
-    InadequatePermissions, NameTooLong \
+from exc import UserNotFound, InvalidPassword, InvalidRequest, \
+    NameTooLong, UserAlreadyExists, InsufficientFunds \
     ## pylint: disable=import-error
+from conf import MAX_NAME_LENGTH    ## pylint: disable=import-error
 
 
 class CCash:
-    '''
-    The configuration class for CCash server communication  
-    '''
-
     def __init__(self, domain: str, timeout=20):
         '''
-        Initializes a new instance of the CCash class
-
-        `domain`: the domain name of the server hosting CCash  
-        `timeout`: the maximum amount of time to wait for a server
-        response
+        `domain`: the domain name or address of a CCash server  
+        `timeout`: the timeout duration for a server response
         '''
 
         self.domain = domain
@@ -46,70 +40,141 @@ class CCash:
 
     def help(self):
         '''
-        Gets the CCash help page
-
-        Returns the UTF-8 formatted help texts
+        Returns the CCash help page as a byte array
         '''
 
         return requests.get(
             self.domain + "/BankF/help",
             timeout=self.timeout
-        ).text
+        ).content
+
+
+    def ping(self):
+        '''
+        Returns a boolean value indicating if the server is online
+        '''
+
+        try:
+            requests.get(
+                self.domain + "/BankF/ping",
+                timeout=5
+            )
+            return True
+        except requests.Timeout:
+            return False
 
 
     def close(self, admin_pw: str):
         '''
-        Closes and saves the server instance
+        Closes the server and saves its current state  
+        Note that this is the only safe way to do so
 
-        `admin_pw`: the administrator password of the server instance
+        `admin_pw`: the administrator password
+
+        Raises (admin) `InvalidPassword`
         '''
 
-        if requests.post(
+        if not requests.post(
             self.domain + "/BankF/admin/close",
             timeout=self.timeout,
-            json=dict(attempt=admin_pw)
-        ).json()["value"] == -1:
-            raise InadequatePermissions(admin_pw)
+            headers=dict(password=admin_pw)
+        ).json()["value"]:
+            raise InvalidPassword(admin_pw)
 
 
-    def new_user(self, name: str, pw: str):
+    def new_user(self, name: str, init_pw: str):
         '''
         Creates a new user
 
         `name`: the name of the new user  
-        `pw`: the initial password of the new user
+        `init_pw`: the initial password of the new user
 
-        Raises a `NameTooLong` error if the name is too long
+        Raises `NameTooLong`, `UserAlreadyExists`
         '''
 
-        if len(name) > 50:
+        if len(name) > MAX_NAME_LENGTH:
             raise NameTooLong(name)
 
-        requests.post(
-            self.domain + "/BankF/user",
+        if requests.post(
+            self.domain + f"/BankF/user/{name}",
             timeout=self.timeout,
-            json=dict(name=name, init_pass=pw)
-        )
+            headers=dict(password=init_pw)
+        ).json()["value"] == -5:
+            raise UserAlreadyExists(name)
 
 
-    def admin_new_user(self, name: str, pw: str, bal: int, 
+    def admin_new_user(self, name: str, init_pw: str, bal: int, 
         admin_pw: str):
         '''
         Creates a new user with an initial balance greater than 0
 
         `name`: the name of the new user  
-        `pw`: the initial password of the new user  
+        `init_pw`: the initial password of the new user  
         `bal`: the initial balance of the new user  
-        `admin_pw`: the administrator password of the server instance
+        `admin_pw`: the administrator password
+
+        Raises (admin) `InvalidPassword`, `NameTooLong`
         '''
 
-        requests.post(
-            self.domain + "/BankF/admin/user",
-            timeout=self.timeout,
-            json=dict(name=name, init_pass=pw, init_bal=bal, 
-                attempt=admin_pw)
-        )
+        if len(name) > MAX_NAME_LENGTH:
+            raise NameTooLong(name)
 
+        response = requests.post(
+            self.domain + f"/BankF/admin/user/{name}?init_bal={bal}",
+            timeout=self.timeout,
+            headers=dict(password=admin_pw),
+            data=pw
+        ).json()["value"]
+
+        if response == -2:
+            raise InvalidPassword(admin_pw)
+        elif response == -5:
+            raise UserAlreadyExists(name)
+
+
+    def del_user(self, name: str, pw: str):
+        '''
+        Deletes a user
+
+        `name`: the name
+        `pw`: the password
+
+        Raises `UserNotFound`, `InvalidPassword`
+        '''
+
+        response = requests.delete(
+            self.domain + f"/BankF/user/{name}",
+            timeout=self.timeout,
+            headers=dict(password=pw)
+        ).json()["value"]
+
+        if response == -1:
+            raise UserNotFound(name)
+        elif reponse == -2:
+            raise InvalidPassword(pw, name)
+
+
+    def admin_del_user(self, name: str, admin_pw: str):
+        '''
+        Deletes a user with the administrator password
+
+        `name`: the name
+        `admin_pw`: the administrator password
+
+        Raises `UserNotFound`, (admin) `InvalidPassword`
+        '''
+
+        response = requests.delete(
+            self.domain + f"/BankF/admin/user/{name}",
+            timeout=self.timeout,
+            headers=dict(password=admin_pw)
+        ).json()["value"]
+
+        if response == -1:
+            raise UserNotFound(name)
+        elif response == -2:
+            raise InvalidPassword(admin_pw)
+        
 
     def send_funds(self, sender: str, pw: str, receiver: str, 
         amount: int):

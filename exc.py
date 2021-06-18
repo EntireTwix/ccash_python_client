@@ -20,7 +20,8 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ## DEALINGS IN THE SOFTWARE.
 
-class UserNotExists(Exception):
+class UserNotFound(Exception):
+    '''Raised if a user does not exist'''
     def __init__(self, name: str):
         '''
         `name`: the name of the user that does not exist
@@ -30,29 +31,47 @@ class UserNotExists(Exception):
 
 
 class InvalidPassword(Exception):
-    def __init__(self, name: str, pw: str):
+    '''Raised if a user or admin password is incorrect'''
+    def __init__(self, pw: str, name=None):
         '''
-        `name`: the name of the user
-        `pw`: the invalid password
+        `pw`: the invalid password  
+        `name`: the name of the user, `None` if admin password
+        incorrect
         '''
 
-        self.name = name
         self.pw = pw
+        self.name = name
 
 
-class InadequatePermissions(Exception):
-    def __init__(self, admin_pw: str):
-        '''
-        `admin_pw`: the invalid administrator password
-        '''
-
-        self.admin_pw = admin_pw
+class InvalidRequest(Exception):
+    pass
 
 
 class NameTooLong(Exception):
+    '''Raised if a name is longer than 50 characters'''
     def __init__(self, name: str):
         '''
         `name`: the name that is too long
+        '''
+
+        self.name = name
+
+
+class UserAlreadyExists(Exception):
+    '''Raised when trying to create a user but they already exist'''
+    def __init__(self, name: str):
+        '''
+        `name`: the name of the user that already exists
+        '''
+
+        self.name = name
+
+
+class InsufficientFunds(Exception):
+    '''Raised when trying to transfer funds not available'''
+    def __init__(self, name: str):
+        '''
+        `name`: the name of the user who has insufficient funds
         '''
 
         self.name = name
