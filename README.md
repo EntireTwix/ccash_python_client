@@ -16,21 +16,11 @@ has its information written in markdown format beneath the
 definition.
 
 ## Setup
-Because this is a small module, it is safe to clone it into your
-working directory. Use the following git commands or download
-the source code from GitHub.
+Assuming `pip` is installed, run the following command in a terminal:
+`python3 -m pip install CCashPythonClient`
 
-`git clone https://GitHub.com/FearlessDoggo21/CCashPythonClient`
+You may then import the server class as follows:
+`from CCashPythonClient import CCash`
 
-You will then be able to import the python module. \
-It is requested that the README remains in the directory. The license
-must remain.
-
-`import CCashPythonClient as CCash`
-
-To enable VSCode IntelliSense auto-completion and markdown
-information, place the following lines in `.vscode/settings.json`:
-
-    "python.autoComplete.extraPaths": [
-        "${workspaceFolder}/CCashPythonClient"
-    ]
+The exceptions may be found in `CCashPythonClient.ex`.
+The configurations may be found in `CCashPythonClient.conf`.
