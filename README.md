@@ -1,6 +1,5 @@
 # CCashPythonClient
-A web-client to query CCash servers, providing ease of 
-development. \
+A Python client for CCash servers. \
 Uses the requests lib to communicate with a remote server. \
 Implements python Exception based errors rather than numbers, and
 returns JSON data as dictionaries.
