@@ -20,5 +20,24 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ## DEALINGS IN THE SOFTWARE.
 
-MAX_NAME_LENGTH = 50
-API_VERSION     = 1
+import base64
+
+class User:
+    '''
+    Structure to keep track of a username and password pair
+    '''
+
+    def __init__(self, username: str, password: str, admin: bool):
+        self.username = username
+        self.password = password
+        self.admin = admin
+
+
+    def __eq__(self, other) -> bool:
+        return (self.username, self.password, self.admin) == \
+                (other.username, other.password, other.admin)
+
+
+    def auth_encode(self) -> bytes:
+        return base64.standard_b64encode(
+                f"{self.username}:{self.password}")

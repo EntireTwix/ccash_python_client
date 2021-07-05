@@ -20,61 +20,32 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ## DEALINGS IN THE SOFTWARE.
 
-class UserNotFound(Exception):
-    '''Raised if a user does not exist'''
-    def __init__(self, name: str):
-        '''
-        `name`: the name of the user that does not exist
-        '''
-
-        self.name = name
+from .inc import User
 
 
-class InvalidPassword(Exception):
-    '''Raised if a user or admin password is incorrect'''
-    def __init__(self, pw: str, name=None):
-        '''
-        `pw`: the invalid password  
-        `name`: the name of the user, `None` if admin password
-        incorrect
-        '''
+class BadRequest(Exception):
+    '''
+    Raised if the request had a logically incorrect element
+    '''
 
-        self.pw = pw
-        self.name = name
+    def __init__(self, content: str):
+        self.content = content
 
 
-class InvalidRequest(Exception):
-    '''Raised when trying to send funds to self or if amount is 0'''
-    pass
+class Unauthorized(Exception):
+    '''
+    Raised if a user cannot be authenticated
+    '''
+
+    def __init__(self, user: User):
+        self.user = user
 
 
-class NameTooLong(Exception):
-    '''Raised if a name is longer than 50 characters'''
-    def __init__(self, name: str):
-        '''
-        `name`: the name that is too long
-        '''
+class NotFound(Exception):
+    '''
+    Raised if a user cannot be found on the server
+    '''
 
-        self.name = name
+    def __init__(self, username: str):
+        self.username = username
 
-
-class UserAlreadyExists(Exception):
-    '''Raised when trying to create a user but they already exist'''
-    def __init__(self, name: str):
-        '''
-        `name`: the name of the user that already exists
-        '''
-
-        self.name = name
-
-
-class InsufficientFunds(Exception):
-    '''Raised when trying to transfer funds not available'''
-    def __init__(self, name: str, amount: int):
-        '''
-        `name`: the name of the user who has insufficient funds
-        `amount`: an insufficient amount
-        '''
-
-        self.name = name
-        self.amount = amount

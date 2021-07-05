@@ -23,39 +23,31 @@
 import requests
 from .ex import UserNotFound, InvalidPassword, InvalidRequest, \
     NameTooLong, UserAlreadyExists, InsufficientFunds
-from .conf import MAX_NAME_LENGTH
+from .conf import MAX_NAME_LENGTH, API_VERSION
+from .inc import User
 
 
 class CCash:
-    def __init__(self, domain: str, timeout=20):
-        '''
-        `domain`: the domain name or address of a CCash server  
-        `timeout`: the timeout duration for a server response
-        '''
+    '''
+    The CCash client class
+    '''
 
-        self.domain = domain
+    def __init__(self, domain: str, timeout=20):
+        self.domain = domain + "/api/v" + chr(ord('0') + API_VERSION)
         self.timeout = timeout
 
 
-    def help(self):
-        '''
-        Returns the CCash help page as a byte array
-        '''
-
+    def help(self) -> str:
         return requests.get(
-            self.domain + "/BankF/help",
+            self.domain + "/help",
             timeout=self.timeout
-        ).content
+        ).text
 
 
-    def ping(self):
-        '''
-        Returns a boolean value indicating if the server is online
-        '''
-
+    def ping(self) -> bool:
         try:
             requests.get(
-                self.domain + "/BankF/ping",
+                self.domain + "/ping",
                 timeout=5
             )
             return True
@@ -64,7 +56,7 @@ class CCash:
             return False
 
 
-    def close(self, admin_pw: str):
+    def close(self, admin: User):
         '''
         Closes the server and saves its current state  
         Note that this is the only safe way to do so
@@ -75,11 +67,11 @@ class CCash:
         '''
 
         if requests.post(
-            self.domain + "/BankF/admin/close",
+            self.domain + "/admin/shutdown",
             timeout=self.timeout,
-            headers=dict(password=admin_pw)
+            headers=dict(authorization=admin.auth_encode())
         ).content == "false":
-            raise InvalidPassword(admin_pw)
+            raise InvalidPassword(admin)
 
 
     def new_user(self, name: str, init_pw: str):
