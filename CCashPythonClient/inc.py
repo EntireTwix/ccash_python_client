@@ -20,24 +20,21 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ## DEALINGS IN THE SOFTWARE.
 
-import base64
+import base64 as b64
 
 class User:
     '''
     Structure to keep track of a username and password pair
     '''
 
-    def __init__(self, username: str, password: str, admin: bool):
-        self.username = username
-        self.password = password
-        self.admin = admin
+    def __init__(self, name: str, passwd: str):
+        self.name = name
+        self.passwd = passwd
 
 
-    def __eq__(self, other) -> bool:
-        return (self.username, self.password, self.admin) == \
-                (other.username, other.password, other.admin)
+    def __eq__(self, other: User) -> bool:
+        return (self.name, self.passwd) == (other.name, other.passwd)
 
 
     def auth_encode(self) -> bytes:
-        return base64.standard_b64encode(
-                f"{self.username}:{self.password}")
+        return b64.standard_b64encode(f"{self.name}:{self.passwd}")

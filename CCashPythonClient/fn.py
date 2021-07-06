@@ -21,9 +21,7 @@
 ## DEALINGS IN THE SOFTWARE.
 
 import requests
-from .ex import UserNotFound, InvalidPassword, InvalidRequest, \
-    NameTooLong, UserAlreadyExists, InsufficientFunds
-from .conf import MAX_NAME_LENGTH, API_VERSION
+from .ex import BadRequest, Unauthorized, NotFound
 from .inc import User
 
 
@@ -33,60 +31,58 @@ class CCash:
     '''
 
     def __init__(self, domain: str, timeout=20):
-        self.domain = domain + "/api/v" + chr(ord('0') + API_VERSION)
+        properties = requests.get(
+            domain + "/api/properties"
+        ).json()
+
+        self.version  = properties["version"]
+        self.name_max = properties["max_name"]
+        self.name_min = properties["min_name"]
+        self.log_max  = properties["max_log"]
+
+        self.domain = domain + "/api/v" + str(self.version)
         self.timeout = timeout
 
 
-    def help(self) -> str:
-        return requests.get(
-            self.domain + "/help",
-            timeout=self.timeout
-        ).text
+    def valid_name(self, name: bytes) -> bool:
+        '''
+        Returns a boolean value indicating whether the input is a
+        valid name.
+        '''
 
-
-    def ping(self) -> bool:
-        try:
-            requests.get(
-                self.domain + "/ping",
-                timeout=5
-            )
-            return True
-        except (requests.exceptions.Timeout, 
-            requests.exceptions.ConnectionError):
+        if len(name) > self.name_max or len(name) < self.name_min:
             return False
+        
+        ## Alpha-numeric check, could be run with python functions
+        ## yet that is slightly wasteful as it deals with unicode
+        for ch in name:
+            if not ((ch >= 'A' and ch <= 'Z') or
+                    (ch >= 'a' and ch <= 'z') or
+                    (ch >= '0' and ch <= '9') or
+                    ch == '_'):
+                return False
+
+        return True
 
 
-    def close(self, admin: User):
+    def close(self, admin: User) -> bool:
         '''
-        Closes the server and saves its current state  
-        Note that this is the only safe way to do so
-
-        `admin_pw`: the administrator password
-
-        Raises (admin) `InvalidPassword`
+        Safely closes the server and saves its current state.  
+        Returns a boolean value based on whether the credentials were
+        correct.
         '''
-
-        if requests.post(
+        
+        return requests.post(
             self.domain + "/admin/shutdown",
             timeout=self.timeout,
-            headers=dict(authorization=admin.auth_encode())
-        ).content == "false":
-            raise InvalidPassword(admin)
+            headers={"Authorization": admin.auth_encode()}
+        ).content == "true"
 
 
     def new_user(self, name: str, init_pw: str):
         '''
-        Creates a new user
-
-        `name`: the name of the new user  
-        `init_pw`: the initial password of the new user
-
-        Raises `NameTooLong`, `UserAlreadyExists`
+        Creates a new user without an initial balance
         '''
-
-        if len(name) > MAX_NAME_LENGTH:
-            raise NameTooLong(name)
-
         if requests.post(
             self.domain + f"/BankF/user/{name}",
             timeout=self.timeout,

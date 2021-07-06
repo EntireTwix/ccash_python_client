@@ -20,7 +20,6 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ## DEALINGS IN THE SOFTWARE.
 
-from .ex import UserNotFound, InvalidPassword, InvalidRequest, \
-    NameTooLong, UserAlreadyExists, InsufficientFunds
-from .conf import MAX_NAME_LENGTH
+from .ex import BadRequest, Unauthorized, NotFound
 from .fn import CCash
+from .inc import User
