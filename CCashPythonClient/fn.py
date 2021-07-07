@@ -28,11 +28,11 @@ class CCash:
     '''The CCash client class'''
 
     def __init__(self, domain: str, timeout=20):
-        ## Gets only the protocol and domain without following path
-        domain = domain.split('/')[:3]
+        if domain[-1] != '/':
+            domain += '/'
 
         properties = requests.get(
-            domain + "/api/properties"
+            domain + "api/properties"
         ).json()
 
         self.version  = properties["version"]
@@ -40,7 +40,7 @@ class CCash:
         self.name_min = properties["min_name"]
         self.log_max  = properties["max_log"]
 
-        self.domain = domain + "/api/v" + str(self.version)
+        self.domain = domain + "api/v" + str(self.version)
         self.timeout = timeout
 
 

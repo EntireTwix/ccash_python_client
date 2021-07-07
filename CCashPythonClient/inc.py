@@ -31,9 +31,11 @@ class User:
         self.passwd = passwd
 
 
-    def __eq__(self, other: User) -> bool:
+    def __eq__(self, other) -> bool:
         return (self.name, self.passwd) == (other.name, other.passwd)
 
 
     def auth_encode(self) -> bytes:
-        return b64.standard_b64encode(f"{self.name}:{self.passwd}")
+        return b64.standard_b64encode(
+            bytes(f"{self.name}:{self.passwd}", "ascii")
+        )
