@@ -5,8 +5,8 @@ server = CCash.CCash("https://wtfisthis.tech/")
 admin = CCash.User("Admin", "AdminPassword")
 user = CCash.User("PythonClientTest", "123456")
 
-code = server.del_user(user)
-print(code)
+status = server.del_user(user)
+print(status)
 
-code = server.new_user("PythonClientTest", "123456")
-print(code)
+status = server.new_user("PythonClientTest", "123456")
+print(status)

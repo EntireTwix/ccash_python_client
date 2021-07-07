@@ -20,11 +20,11 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ## DEALINGS IN THE SOFTWARE.
 
-import base64 as b64
+import base64
 
 
 class User:
-    '''Structure to keep track of a username and password pair'''
+    '''Structure to keep track of a username and password pair.'''
 
     def __init__(self, name: str, passwd: str):
         self.name = name
@@ -35,7 +35,9 @@ class User:
         return (self.name, self.passwd) == (other.name, other.passwd)
 
 
-    def auth_encode(self) -> bytes:
-        return b64.standard_b64encode(
+    def auth_encode(self) -> str:
+        ## Processing on raw string because `str()` outputs with byte
+        ## prefix
+        return "Basic " + str(base64.standard_b64encode(
             bytes(f"{self.name}:{self.passwd}", "ascii")
-        )
+        ))[2:-2]

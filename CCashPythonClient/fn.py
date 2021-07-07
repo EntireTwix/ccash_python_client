@@ -95,7 +95,7 @@ class CCash:
             return 400
 
         return requests.post(
-            self.domain + f"/admin/user/register",
+            self.domain + "/admin/user/register",
             timeout=self.timeout,
             headers={"Authorization": admin.auth_encode()},
             json={"name": name, "pass": passwd, "amount": amount}
@@ -104,8 +104,10 @@ class CCash:
 
     def del_user(self, user: User) -> int:
         '''Deletes a user.'''
+        print(user.auth_encode())
+
         return requests.delete(
-            self.domain + f"/user/delete",
+            self.domain + "/user/delete",
             timeout=self.timeout,
             headers={"Authorization": user.auth_encode()}
         ).status_code
