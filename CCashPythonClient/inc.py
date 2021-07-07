@@ -22,10 +22,9 @@
 
 import base64 as b64
 
+
 class User:
-    '''
-    Structure to keep track of a username and password pair
-    '''
+    '''Structure to keep track of a username and password pair'''
 
     def __init__(self, name: str, passwd: str):
         self.name = name
