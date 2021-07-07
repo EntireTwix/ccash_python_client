@@ -75,37 +75,36 @@ class CCash:
         ).status_code
 
 
-    def new_user(self, name: str, passwd: str) -> int:
+    def new_user(self, user: User) -> int:
         '''Creates a new user without an initial balance.'''
-        if not self.valid_name(name):
+        if not self.valid_name(user.name):
             return 400
 
         ## Status code will be 409 Conflict if user already exists
         return requests.post(
             self.domain + "/user/register",
             timeout=self.timeout,
-            json={"name": name, "pass": passwd}
+            json={"name": user.name, "pass": user.passwd}
         ).status_code
 
 
-    def admin_new_user(self, admin: User, name: str, passwd: str,
+    def admin_new_user(self, admin: User, user: User,
             amount: int) -> int:
         '''Creates a new user with an initial balance.'''
-        if not self.valid_name(name):
+        if not self.valid_name(user.name):
             return 400
 
         return requests.post(
             self.domain + "/admin/user/register",
             timeout=self.timeout,
             headers={"Authorization": admin.auth_encode()},
-            json={"name": name, "pass": passwd, "amount": amount}
+            json={"name": user.name, "pass": user.passwd, 
+                    "amount": amount}
         ).status_code
 
 
     def del_user(self, user: User) -> int:
         '''Deletes a user.'''
-        print(user.auth_encode())
-
         return requests.delete(
             self.domain + "/user/delete",
             timeout=self.timeout,
@@ -128,7 +127,7 @@ class CCash:
         return requests.get(
             self.domain + f"/user/exists?name={name}",
             timeout=self.timeout
-        ).content == bytes("true")
+        ).content == "true"
 
 
     def verify_passwd(self, user: User) -> bool:
@@ -138,7 +137,7 @@ class CCash:
             self.domain + "/user/verify_password",
             timeout=self.timeout,
             headers={"Authorization": user.auth_encode()}
-        ).content == bytes("true")
+        ).content == "true"
 
 
     def verify_admin(self, admin: User) -> bool:
@@ -147,7 +146,7 @@ class CCash:
             self.domain + "/admin/verify_account",
             timeout=self.timeout,
             headers={"Authorization": admin.auth_encode()}
-        ).content == bytes("true")
+        ).content == "true"
 
 
     def change_passwd(self, user: User, passwd: str) -> int:
@@ -166,7 +165,7 @@ class CCash:
         return requests.patch(
             self.domain + "/admin/user/change_password",
             timeout=self.timeout,
-            headers={"Authorization", admin.auth_encode()},
+            headers={"Authorization": admin.auth_encode()},
             json={"name": name, "pass": passwd}
         ).status_code
 
@@ -178,7 +177,7 @@ class CCash:
             self.domain + f"/user/balance?name={name}",
             timeout=self.timeout
         )
-        return int(str(response.content)) if response.status_code \
+        return int(str(response.content)[2:-1]) if response.status_code \
                 == 200 else 0
 
 
@@ -187,7 +186,7 @@ class CCash:
         return requests.patch(
             self.domain + "/admin/set_balance",
             timeout=self.timeout,
-            headers={"Authorization", admin.auth_encode()},
+            headers={"Authorization": admin.auth_encode()},
             json={"name": name, "amount": balance}
         ).status_code
 
@@ -204,7 +203,7 @@ class CCash:
 
     def get_logs(self, user: User) -> dict:
         '''Returns the logged transactions of a user.'''
-        requests.get(
+        return requests.get(
             self.domain + "/user/log",
             timeout = self.timeout,
             headers={"Authorization": user.auth_encode()}

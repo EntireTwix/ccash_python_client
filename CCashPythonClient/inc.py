@@ -40,4 +40,4 @@ class User:
         ## prefix
         return "Basic " + str(base64.standard_b64encode(
             bytes(f"{self.name}:{self.passwd}", "ascii")
-        ))[2:-2]
+        ))[2:-1]
