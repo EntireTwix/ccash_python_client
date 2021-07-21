@@ -19,7 +19,4 @@ Assuming `pip` is installed, run the following command in a terminal:
 `python3 -m pip install CCashPythonClient`
 
 You may then import the server class as follows:
-`from CCashPythonClient import CCash`
-
-The exceptions may be found in `CCashPythonClient.ex`.
-The configurations may be found in `CCashPythonClient.conf`.
+`from CCashPythonClient import * as CCash`
