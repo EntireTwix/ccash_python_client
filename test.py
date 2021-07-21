@@ -1,21 +1,41 @@
 import CCashPythonClient as CCash
 
-## Test server, values subject to change
-server = CCash.CCash("https://wtfisthis.tech/")
-admin  = CCash.User("Admin", "AdminPassword")
-user1  = CCash.User("ClientTest1", "01234")
-user2  = CCash.User("ClientTest2", "56789")
 
-print(server.del_user(user1) == 200,                        "del_user")
-print(server.admin_del_user(admin, user2.name) == 200,      "admin_del_user")
+def bold(val: str):
+    return f"\x1b[1m{val}\x1b[0m"
 
-print(server.new_user(user1) == 200,                        "new_user")
-print(server.admin_new_user(admin, user2, 10000) == 200,    "admin_new_user")
 
-print(server.impact_bal(admin, user2.name, -5000) == 200,   "impact_bal")
-print(server.get_bal(user2.name) == 5000,                   "get_bal")
-print(server.set_bal(admin, user2.name, 10000) == 200,      "set_bal")
+def expect(name: str, code: int, val) -> None:
+    print(f"{name} {bold(code == val.status_code)}")
+    print(f"Expects {bold(code)}, returned {bold(val.status_code)}.\n")
 
-print(server.change_passwd(user2, "01234") == 200,          "change_passwd")
-user2.passwd = "01234"
-print(server.verify_passwd(user2) == 200,                   "verify_passwd")
+    print("Request data:")
+    print(val.request.headers)
+    print(val.request.body, end="\n\n")
+
+    print("Response data:")
+    print(val.headers)
+
+    content = str(val.content)
+    if content != "b''" and content != None:
+        print(str(val.content)[2:-1], end="\n\n\n")
+    else:
+        print("No meaningful body data.\n\n")
+
+
+def main():
+    ## Test server, values subject to change
+    server = CCash.CCash("https://wtfisthis.tech/")
+    admin  = CCash.User("admin", "AdminPassword")
+    user1  = CCash.User("clienttest1", "01234")
+    user2  = CCash.User("clienttest2", "56789")
+    
+    expect("del_user", 204, server.del_user(user1))
+    expect("admin_del_user", 204, server.admin_del_user(admin, user2.name))
+    
+    expect("new_user", 204, server.new_user(user1))
+    expect("admin_new_user", 204, server.admin_new_user(admin, user2, 10000))
+
+
+if __name__ == "__main__":
+    main()

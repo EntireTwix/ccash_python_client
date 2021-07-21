@@ -43,7 +43,7 @@ class User:
         ))[2:-1]
 
     
-    def __dict__(self) -> dict:
+    def to_dict(self) -> dict:
         return {"name": self.name, "pass": self.passwd}
 
 

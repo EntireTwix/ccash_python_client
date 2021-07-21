@@ -28,11 +28,13 @@ class CCash:
     '''The CCash client class'''
 
     def __init__(self, domain: str, timeout=20):
+        self.timeout = timeout
         if domain[-1] != '/':
             domain += '/'
 
         properties = get(
-            domain + "api/properties"
+            domain + "api/properties",
+            timeout=self.timeout
         ).json()
 
         self.version = properties["version"]
@@ -40,7 +42,6 @@ class CCash:
         self.ret_del = properties.get("return_on_del", "")
 
         self.domain = domain + "api/v" + str(self.version)
-        self.timeout = timeout
 
 
     def close(self, admin: User) -> Response:
@@ -61,7 +62,7 @@ class CCash:
             self.domain + "/user/register",
             timeout=self.timeout,
             headers={"Accept": "*/*"},
-            json=dict(user)
+            json=user.to_dict()
         )
 
 
@@ -75,7 +76,8 @@ class CCash:
                 "Accept": "*/*",
                 "Authorization": admin.auth_encode()
             },
-            json=dict(user) + {"amount": amount}
+            json={"name": user.name, "amount": amount, 
+                    "pass": user.passwd}
         )
 
 
@@ -161,7 +163,7 @@ class CCash:
                 "Accept": "*/*",
                 "Authorization": admin.auth_encode()
             },
-            json=dict(user)
+            json=user.to_dict()
         )
 
 
