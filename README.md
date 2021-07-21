@@ -15,8 +15,9 @@ has its information written in markdown format beneath the
 definition.
 
 ## Setup
-Assuming `pip` is installed, run the following command in a terminal:
+Assuming `pip` is installed, run the following command in a
+terminal:  
 `python3 -m pip install CCashPythonClient`
 
-You may then import the server class as follows:
+You may then import the server class as follows:  
 `from CCashPythonClient import * as CCash`
