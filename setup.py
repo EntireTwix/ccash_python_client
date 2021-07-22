@@ -9,7 +9,7 @@ with open("README.md", "r") as file:
 setup(
     name             = "CCashPythonClient",
     packages         = ["CCashPythonClient"],
-    version          = "0.2.0",
+    version          = "1.0.0",
     license          = "MIT",
     description      = "A web-client to query CCash servers, providing ease of development.",
     long_description = desc,
