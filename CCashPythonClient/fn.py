@@ -32,10 +32,15 @@ class CCash:
         if domain[-1] != '/':
             domain += '/'
 
-        properties = get(
-            domain + "api/properties",
-            timeout=self.timeout
-        ).json()
+        try:
+            properties = get(
+                domain + "api/properties",
+                timeout=self.timeout
+            ).json()
+        except Exception as error:
+            print("The server is most likely not running.")
+            raise error
+            return
 
         self.version = properties["version"]
         self.log_max = properties["max_log"]
