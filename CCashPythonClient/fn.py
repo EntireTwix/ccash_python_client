@@ -153,8 +153,8 @@ class CCash:
         )
 
 
-    def admin_change_passwd(self, admin: User, user: User) -> \
-            Response:
+    def admin_change_passwd(self, admin: User, name: str, \
+            passwd: str) -> Response:
         '''Changes a user password via the admin password.'''
         return patch(
             self.domain + "/admin/user/change_password",
@@ -163,7 +163,7 @@ class CCash:
                 "Accept": "*/*",
                 "Authorization": admin.auth_encode()
             },
-            json=user.to_dict()
+            json={"name": name, "pass": passwd}
         )
 
 
@@ -220,7 +220,7 @@ class CCash:
     def send(self, user: User, name: str, amount: str) -> Response:
         '''Sends an amount to another user.'''
         return post(
-            self.domain + "user/transfer",
+            self.domain + "/user/transfer",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
