@@ -6,13 +6,13 @@ def bold(val: str) -> str:
 
 
 def success(val: bool) -> str:
-    return f"""\x1b[1m\x1b[3{chr(ord('1') + int(val))} \
-            m{str(val)}\x1b[m"""
+    return f"\x1b[1m\x1b[3{chr(ord('1') + int(val))}m{str(val)}" \
+            "\x1b[m"
 
 def expect(name: str, code: int, val) -> None:
     print(f"{name} {success(code == val.status_code)}")
-    print(f"Expects {bold(code)}, \
-            returned {bold(val.status_code)}.\n")
+    print(f"Expects {bold(code)}," \
+            f" returned {bold(val.status_code)}.\n")
 
     print("Request data:")
     print(val.request.headers)
@@ -68,6 +68,12 @@ def main():
     expect("send", 200, server.send(user2, user1.name, 5000))
     expect("get_logs", 200, server.get_logs(user2))
     expect("prune", 200, server.prune(admin, 120, 0))
+
+    ## Changing passwords back for next test cycle
+    expect("change_passwd", 204, 
+            server.change_passwd(user1, "01234"))
+    expect("admin_change_passwd", 204, 
+            server.admin_change_passwd(admin, user2.name, "56789"))
 
 
 if __name__ == "__main__":

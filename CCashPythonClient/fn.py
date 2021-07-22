@@ -38,7 +38,7 @@ class CCash:
                 timeout=self.timeout
             ).json()
         except Exception as error:
-            print("The server is most likely not running.")
+            print("\x1b[1m\x1b[31mThe server is most likely not running.\x1b[m")
             raise error
             return
 
