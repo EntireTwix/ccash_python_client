@@ -1,4 +1,4 @@
-#! /bin/python3
+#!/usr/bin/python3
 # see LICENCE for licensing information
 from requests import get, post, delete, patch, Response
 from .inc import User
