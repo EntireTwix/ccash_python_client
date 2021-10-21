@@ -1,0 +1,27 @@
+Metadata-Version: 2.1
+Name: ccash-python-client
+Version: 1.0.1
+Summary: A web-client to query CCash servers, providing ease of development.
+Home-page: UNKNOWN
+Author: FearlessDoggo21
+Author-email: fearlessdoggo21@vivaldi.net
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Description-Content-Type: text/plain
+License-File: LICENCE
+
+ccash_python_client
+===================
+Python client for CCash servers. Uses the `requests` library and translates
+errors into exceptions from numbers.
+
+The original porject source is [https://gitHub.com/entiretwix/ccash].
+
+setup
+-----
+
+`python3 -m pip install CCashPythonClient`
+
+

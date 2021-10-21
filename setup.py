@@ -1,22 +1,20 @@
-## python3 setup.py sdist
-## twine upload dist/*
-
+#!/usr/bin/python3
+# python3 setup.py sdist; twine upload dist/*
 from setuptools import setup
 
-with open("README.md", "r") as file:
+with open("README", "r") as file:
     desc = file.read()
 
 setup(
-    name             = "CCashPythonClient",
-    packages         = ["CCashPythonClient"],
-    version          = "1.0.0",
+    name             = "ccash-python-client",
+    packages         = ["ccash-python-client"],
+    version          = "1.0.1",
     license          = "MIT",
     description      = "A web-client to query CCash servers, providing ease of development.",
     long_description = desc,
-    long_description_content_type = "text/markdown",
+    long_description_content_type = "text/plain",
     author           = "FearlessDoggo21",
     author_email     = "fearlessdoggo21@vivaldi.net",
-    url              = "https://GitHub.com/FearlessDoggo21/CCashPythonClient/",
 
     install_requires = [
         "requests"
