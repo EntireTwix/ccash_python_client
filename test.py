@@ -1,4 +1,4 @@
-import CCashPythonClient as CCash
+import ccash_python_client as ccash
 
 
 def bold(val: str) -> str:
@@ -35,10 +35,10 @@ def expect(name: str, code: int, val) -> None:
 
 def main():
     ## Test server, values subject to change
-    server = CCash.CCash("https://wtfisthis.tech/", 5)
-    admin  = CCash.User("admin", "AdminPassword")
-    user1  = CCash.User("clienttest1", "01234")
-    user2  = CCash.User("clienttest2", "56789")
+    server = ccash.CCash("https://wtfisthis.tech/", 5)
+    admin  = ccash.User("admin", "AdminPassword")
+    user1  = ccash.User("clienttest1", "01234")
+    user2  = ccash.User("clienttest2", "56789")
     
     expect("del_user", 204, server.del_user(user1))
     expect("admin_del_user", 204, 

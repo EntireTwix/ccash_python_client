@@ -7,5 +7,4 @@ The original porject source is [https://gitHub.com/entiretwix/ccash].
 
 setup
 -----
-
-`python3 -m pip install CCashPythonClient`
+`python3 -m pip install ccash_python_client`
