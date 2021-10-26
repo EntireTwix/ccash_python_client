@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# see LICENCE file for licensing information
 import ccash_python_client as ccash
 
 

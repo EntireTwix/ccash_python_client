@@ -6,11 +6,11 @@ with open("README", "r") as file:
     desc = file.read()
 
 setup(
-    name             = "ccash-python-client",
-    packages         = ["ccash-python-client"],
-    version          = "1.0.1",
+    name             = "ccash_python_client",
+    packages         = ["ccash_python_client"],
+    version          = "1.0.0",
     license          = "MIT",
-    description      = "A web-client to query CCash servers, providing ease of development.",
+    description      = "Python client for CCash servers",
     long_description = desc,
     long_description_content_type = "text/plain",
     author           = "FearlessDoggo21",
@@ -21,7 +21,7 @@ setup(
     ],
 
     classifiers      = [
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3'
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3"
     ],
 )
