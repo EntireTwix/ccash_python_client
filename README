@@ -5,6 +5,9 @@ errors into exceptions from numbers.
 
 The original porject source is [https://github.com/entiretwix/ccash].
 
-setup
------
-`python3 -m pip install ccash_python_client`
+installation
+------------
+Install pip with python and run the following command:
+
+    python3 -m pip install ccash_python_client
+

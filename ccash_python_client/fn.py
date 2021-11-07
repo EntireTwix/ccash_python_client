@@ -1,5 +1,9 @@
 #!/usr/bin/python3
+
+# ccash_python_client - ccash python client
+# Copyright (C) 2021 FearlessDoggo21
 # see LICENCE for licensing information
+
 from requests import get, post, delete, patch, Response
 from .inc import User
 

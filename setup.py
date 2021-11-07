@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+# ccash_python_client - ccash python client
+# Copyright (C) 2021 FearlessDoggo21
+# see LICENCE file for licensing information
+
 # python3 setup.py sdist; twine upload dist/*
 from setuptools import setup
 
