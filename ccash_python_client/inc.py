@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/bin/python3
 # ccash_python_client - ccash python client
 # Copyright (C) 2021 FearlessDoggo21
 # see LICENCE file for licensing information
@@ -8,7 +8,6 @@ import base64
 
 class User:
     '''Structure to keep track of a username and password pair.'''
-
     def __init__(self, name: str, passwd: str):
         self.name = name
         self.passwd = passwd
@@ -32,9 +31,8 @@ class User:
 
 def valid_name(self, name: bytes) -> bool:
     '''Verifies if a name is valid on the server.  
-    It must be within the name length requirements,
-    made of ASCII characters, and lower- alpha-numerical with
-    underscores.'''
+    It must be within the name length requirements, made of ASCII characters,
+    and lower- alpha-numerical with underscores.'''
     if len(name) > 16 or len(name) < 3:
         return False
 

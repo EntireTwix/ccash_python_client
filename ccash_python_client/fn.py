@@ -1,5 +1,4 @@
-#!/usr/bin/python3
-
+#!/bin/python3
 # ccash_python_client - ccash python client
 # Copyright (C) 2021 FearlessDoggo21
 # see LICENCE for licensing information
@@ -10,7 +9,6 @@ from .inc import User
 
 class CCash:
     '''The CCash client class'''
-
     def __init__(self, domain: str, timeout=20):
         self.timeout = timeout
         if domain[-1] != '/':
@@ -18,13 +16,11 @@ class CCash:
 
         try:
             properties = get(
-                domain + "api/properties",
-                timeout=self.timeout
+                domain + "api/properties", timeout=self.timeout
             ).json()
         except Exception as error:
             print("\x1b[1m\x1b[31mThe server is most likely not running.\x1b[m")
             raise error
-            return
 
         self.version = properties["version"]
         self.log_max = properties["max_log"]
