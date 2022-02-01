@@ -1,13 +1,12 @@
-ccash_python_client
-===================
-Python client for CCash servers. Uses the `requests` library and translates
-errors into exceptions from numbers.
+ccash_python_client - ccash python client
+=========================================
+ccash_python_client is a Python3 API client for CCash servers. It uses the
+requests library and translates error numbers to exceptions. The CCash
+repository can be found at https://github.com/entiretwix/ccash.
 
-The original porject source is [https://github.com/entiretwix/ccash].
-
-installation
+Installation
 ------------
-Install pip with python and run the following command:
+Install pip with Python3 and run the following command:
 
     python3 -m pip install ccash_python_client
 

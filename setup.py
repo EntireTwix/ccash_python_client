@@ -12,7 +12,7 @@ with open("README", "r") as file:
 setup(
     name             = "ccash_python_client",
     packages         = ["ccash_python_client"],
-    version          = "1.0.0",
+    version          = "1.0.1",
     license          = "MIT",
     description      = "Python client for CCash servers",
     long_description = desc,
