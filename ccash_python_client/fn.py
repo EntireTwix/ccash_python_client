@@ -26,13 +26,13 @@ class CCash:
         self.log_max = properties["add_user_open"]
         self.ret_del = properties["return_on_del"]
 
-        self.domain = domain + "api/v1"
+        self.domain = domain + "api/"
         
 
     def close(self, admin: User) -> Response:
         '''Safely closes the server and saves its current state.'''
         return post(
-            self.domain + "/admin/shutdown",
+            self.domain + "v1/admin/shutdown",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -44,7 +44,7 @@ class CCash:
     def new_user(self, user: User) -> Response:
         '''Creates a new user without an initial balance.'''
         return post(
-            self.domain + "/user/register",
+            self.domain + "v1/user/register",
             timeout=self.timeout,
             headers={"Accept": "*/*"},
             json=user.to_dict()
@@ -55,7 +55,7 @@ class CCash:
             amount: int) -> Response:
         '''Creates a new user with an initial balance.'''
         return post(
-            self.domain + "/admin/user/register",
+            self.domain + "v1/admin/user/register",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -69,7 +69,7 @@ class CCash:
     def del_user(self, user: User) -> Response:
         '''Deletes a user.'''
         return delete(
-            self.domain + "/user/delete",
+            self.domain + "v1/user/delete",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -81,7 +81,7 @@ class CCash:
     def admin_del_user(self, admin: User, name: str) -> Response:
         '''Deletes a user via the admin password.'''
         return delete(
-            self.domain + "/admin/user/delete",
+            self.domain + "v1/admin/user/delete",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -94,7 +94,7 @@ class CCash:
     def user_exists(self, name: str) -> Response:
         '''Confirms if a user exists.'''
         return get(
-            self.domain + f"/user/exists?name={name}",
+            self.domain + f"v1/user/exists?name={name}",
             timeout=self.timeout,
             headers={"Accept": "*/*"}
         )
@@ -104,7 +104,7 @@ class CCash:
         '''Confirms a users password.  
         If a `False` value returned, the user may not exist.'''
         return post(
-            self.domain + "/user/verify_password",
+            self.domain + "v1/user/verify_password",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -116,7 +116,7 @@ class CCash:
     def verify_admin(self, admin: User) -> Response:
         '''Confirms the admin account.'''
         return post(
-            self.domain + "/admin/verify_account",
+            self.domain + "v1/admin/verify_account",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -128,7 +128,7 @@ class CCash:
     def change_passwd(self, user: User, passwd: str) -> Response:
         '''Changes a user password.'''
         return patch(
-            self.domain + "/user/change_password",
+            self.domain + "v1/user/change_password",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -142,7 +142,7 @@ class CCash:
             passwd: str) -> Response:
         '''Changes a user password via the admin password.'''
         return patch(
-            self.domain + "/admin/user/change_password",
+            self.domain + "v1/admin/user/change_password",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -156,7 +156,7 @@ class CCash:
         '''Gets the balance of a user.  
         Returns 0 if the user does not exist.'''
         return get(
-            self.domain + f"/user/balance?name={name}",
+            self.domain + f"v1/user/balance?name={name}",
             timeout=self.timeout,
             headers={"Accept": "*/*"}
         )
@@ -166,7 +166,7 @@ class CCash:
             Response:
         '''Sets the balance of a user.'''
         return patch(
-            self.domain + "/admin/set_balance",
+            self.domain + "v1/admin/set_balance",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -180,7 +180,7 @@ class CCash:
             Response:
         '''Offsets the balance of a user.'''
         return post(
-            self.domain + "/admin/impact_balance",
+            self.domain + "v1/admin/impact_balance",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -193,7 +193,7 @@ class CCash:
     def get_logs(self, user: User) -> Response:
         '''Returns the logged transactions of a user.'''
         return get(
-            self.domain + "/user/log",
+            self.domain + "v2/user/log",
             timeout = self.timeout,
             headers={
                 "Accept": "*/*",
@@ -205,7 +205,7 @@ class CCash:
     def send(self, user: User, name: str, amount: str) -> Response:
         '''Sends an amount to another user.'''
         return post(
-            self.domain + "/user/transfer",
+            self.domain + "v1/user/transfer",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
@@ -219,7 +219,7 @@ class CCash:
         '''Deletes all users older than time and which have less
         money than amount.'''
         return post(
-            self.domain + "/admin/prune_users",
+            self.domain + "v1/admin/prune_users",
             timeout=self.timeout,
             headers={
                 "Accept": "*/*",
