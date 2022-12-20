@@ -40,7 +40,7 @@ def expect(name: str, code: int, val) -> None:
 
 def main() -> None:
     ## Test server, values subject to change
-    server = ccash.CCash("localhost")
+    server = ccash.CCash("http://localhost")
     admin = ccash.User("admin", "passwd")
     user1 = ccash.User("test1", "passwd")
     user2 = ccash.User("test2", "passwd")

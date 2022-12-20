@@ -24,7 +24,7 @@ class CCash:
 
         self.log_max = properties["max_log"]
         self.log_max = properties["add_user_open"]
-        self.ret_del = properties.["return_on_del", None]
+        self.ret_del = properties["return_on_del"]
 
         self.domain = domain + "api/v1"
         
