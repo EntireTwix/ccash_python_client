@@ -22,12 +22,12 @@ class CCash:
             print("\x1b[1m\x1b[31mThe server is most likely not running.\x1b[m")
             raise error
 
-        self.version = properties["version"]
         self.log_max = properties["max_log"]
-        self.ret_del = properties.get("return_on_del", "")
+        self.log_max = properties["add_user_open"]
+        self.ret_del = properties.["return_on_del", None]
 
-        self.domain = domain + "api/v" + str(self.version)
-
+        self.domain = domain + "api/v1"
+        
 
     def close(self, admin: User) -> Response:
         '''Safely closes the server and saves its current state.'''
